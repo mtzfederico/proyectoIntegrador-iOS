@@ -8,6 +8,8 @@
 
 import UIKit
 import CoreData
+import os
+
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -31,6 +33,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the user discards a scene session.
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
+    }
+    
+    // MARK: - Register for Notifications
+    
+    let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.mtzfederico.unidentifed", category: "AppDelegate")
+    
+    // Handle remote notification registration.
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        let tokenComponents = deviceToken.map { data in String(format: "%02.2hhx", data) }
+        let deviceTokenString = tokenComponents.joined()
+        
+        logger.debug("device token is: \(deviceTokenString, privacy: .private(mask: .hash))")
+        
+        
+        // self.forwardTokenToServer(tokenString: deviceTokenString)
+        
+    }
+    
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        // The token is not currently available.
+        logger.error("Remote notification support is unavailable due to error: \(error.localizedDescription, privacy: .public)")
     }
 
     // MARK: - Core Data stack
